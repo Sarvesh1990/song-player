@@ -7,6 +7,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
+from youtube_player import add_to_playlist
+
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.renderers import JSONRenderer
@@ -30,13 +32,14 @@ class JSONResponse(HttpResponse):
 @csrf_exempt
 def add_song(request):
 	if request.method == 'POST':
+
 		data = JSONParser().parse(request)
 		data['created_at'] =  datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-		
-		#Check to decide whether entry needs to be done in Incoming database of Outgoing
 		data['primary_id'] = SongsUrl.objects.count()+1
 		serializer = SongsUrlSerializer(data=data)
 		
+		add_to_playlist(data['url'])
+
 		if serializer.is_valid():
 			serializer.save()
 			return JSONResponse(serializer.data, status=status.HTTP_201_CREATED)

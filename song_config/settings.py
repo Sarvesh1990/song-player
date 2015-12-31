@@ -120,6 +120,7 @@ TEMPLATE_DIRS = (
 
 INSTALLED_APPS = (
     'django.contrib.auth',
+    'djangotoolbox',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     # 'django.contrib.sites',
