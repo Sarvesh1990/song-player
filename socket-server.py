@@ -27,27 +27,24 @@ def clientthread(conn):
     #Sending message to connected client
     conn.send('Welcome to the server. Type something and hit enter\n') #send only takes string
      
-    #infinite loop so that function do not terminate and thread do not end.
-    while True:        
-        #Receiving from client
-        data = conn.recv(1024)
-        if not data: 
-            break
+    #Receiving from client, receive data, pass it to redis queue and terminates the connection
+    data = conn.recv(1024)
+    if not data: 
+        conn.close()
 
-        #REST Url to call to add song to mongo database
-        url = 'http://127.0.0.1:8000/addSong/'
-        data = {'url' : data}
-        result = post.delay(url, data)
+    #REST Url to call to add song to mongo database
+    url = 'http://127.0.0.1:8000/addSong/'
+    data = {'url' : data}
+    result = post.delay(url, data)
 
-        try:
-            reply = 'Song url added to database'
-            conn.sendall(reply)
+    try:
+        reply = 'Song url added to database'
+        conn.sendall(reply)
 
-        except socket.error, e:
-            conn.close()
-            exit()
+    except socket.error, e:
+        conn.close()
      
-    #came out of loop
+    #Close the connection
     conn.close()
  
 #now keep talking with the client

@@ -1,9 +1,5 @@
 # telnet program example
 import socket, select, string, sys
-import signal
-
-def signal_handler(signal, frame):
-    return True
 
 def prompt() :
     sys.stdout.write('Please enter song link : ')
